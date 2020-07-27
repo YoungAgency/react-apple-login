@@ -61,9 +61,13 @@ const AppleLogin = (props: AppleLoginProps) => {
         scope: responseMode === "query" ? "" : scope
       }
     )}`;
+    
+    if (!usePopup) {
+      window.location.href = url;
+    }
 
-    var newwindow = window.open(url,"Stepdrop - Apple Sign In",'width=700,height=699,toolbar=0,menubar=0,location=0'); 
-    newwindow?.focus()
+    const newwindow = window.open(url,"Stepdrop - Apple Sign In","width=700,height=699,toolbar=0,menubar=0,location=0"); 
+    if(newwindow != null) newwindow.focus();
   };
 
   useEffect(() => {
