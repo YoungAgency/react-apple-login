@@ -49,7 +49,8 @@ const AppleLogin = (props: AppleLoginProps) => {
     if (e) {
       e.preventDefault();
     }
-    window.location.href = `https://appleid.apple.com/auth/authorize?${generateQueryString(
+
+    var url = `https://appleid.apple.com/auth/authorize?${generateQueryString(
       {
         response_type: responseType,
         response_mode: responseMode,
@@ -57,10 +58,11 @@ const AppleLogin = (props: AppleLoginProps) => {
         redirect_uri: encodeURIComponent(redirectURI),
         state,
         nonce,
-        scope: responseMode === "query" ? "" : scope,
-        usePopup
+        scope: responseMode === "query" ? "" : scope
       }
     )}`;
+    
+    window.open(url, "Stepdrop - Apple Sign In", 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no');
   };
 
   useEffect(() => {
