@@ -10,6 +10,7 @@ export interface AppleLoginProps {
   responseType?: string | "code" | "id_token";
   responseMode?: string | "query" | "fragment" | "form_post";
   nonce?: string;
+  usePopup?: boolean;
   designProp?: {
     // REF: https://developer.apple.com/documentation/signinwithapplejs/incorporating_sign_in_with_apple_into_other_platforms
     height?: number;
@@ -40,7 +41,8 @@ const AppleLogin = (props: AppleLoginProps) => {
     nonce,
     callback,
     scope,
-    autoLoad = false
+    autoLoad = false,
+    usePopup = false
   } = props;
 
   const onClick = (e: any = null) => {
@@ -55,7 +57,8 @@ const AppleLogin = (props: AppleLoginProps) => {
         redirect_uri: encodeURIComponent(redirectURI),
         state,
         nonce,
-        scope: responseMode === "query" ? "" : scope
+        scope: responseMode === "query" ? "" : scope,
+        usePopup
       }
     )}`;
   };
