@@ -61,8 +61,9 @@ const AppleLogin = (props: AppleLoginProps) => {
         scope: responseMode === "query" ? "" : scope
       }
     )}`;
-    
-    window.open(url, "Stepdrop - Apple Sign In", 'width=700, height=699, toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no');
+
+    var newwindow = window.open(url,"Stepdrop - Apple Sign In",'width=700,height=699,toolbar=0,menubar=0,location=0'); 
+    newwindow?.focus()
   };
 
   useEffect(() => {
