@@ -85,10 +85,18 @@ const AppleLogin = (props: AppleLoginProps) => {
         return;
       }
 
+      var firstName = "";
+      var lastName = "";
+
+      if(json["data"]["user"] !== undefined) {
+        firstName = json["data"]["user"]["name"]["firstName"] === undefined ? "" : json["data"]["user"]["name"]["firstName"];
+        lastName = json["data"]["user"]["name"]["lastName"] === undefined ? "" : json["data"]["user"]["name"]["lastName"];
+      }
+
       onSuccess({
         "code": json["data"]["authorization"]["code"] === undefined ? "" : json["data"]["authorization"]["code"],
-        "firstName": json["data"]["user"]["name"]["firstName"] === undefined ? "" : json["data"]["user"]["name"]["firstName"],
-        "lastName": json["data"]["user"]["name"]["lastName"] === undefined ? "" : json["data"]["user"]["name"]["lastName"]
+        "firstName": firstName,
+        "lastName": lastName
       });
     }, false);
   };
