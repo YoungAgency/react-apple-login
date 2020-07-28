@@ -8,11 +8,12 @@ export interface AppleLoginProps {
   scope?: string;
   state?: string;
   responseType?: string | "code" | "id_token";
-  responseMode?: string | "query" | "fragment" | "form_post";
+  responseMode?: string | "query" | "fragment" | "form_post" | "web_message";
   nonce?: string;
   usePopup?: boolean;
   designProp?: {
     // REF: https://developer.apple.com/documentation/signinwithapplejs/incorporating_sign_in_with_apple_into_other_platforms
+    // https://appleid.apple.com/auth/authorize?client_id=com.youngagency.young.web&redirect_uri=https%3A%2F%2Fdocs.youngplatform.com%2Fsignwithapple&response_type=code%20id_token&state=a63550ed-20d9-4148-ac37-524d66dfcfcc&scope=name%20email&response_mode=web_message&frame_id=1283fcc6-b322-4306-a819-ef2556d566ba&m=12&v=1.5.2
     height?: number;
     width?: number;
     color?: string | "white" | "black";
