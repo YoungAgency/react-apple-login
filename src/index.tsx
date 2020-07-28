@@ -1,10 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { generateQueryString } from "./helper";
 
 export interface AppleLoginProps {
   clientId: string;
   redirectURI: string;
-  autoLoad?: boolean;
   scope?: string;
   state?: string;
   responseType?: string | "code" | "id_token";
@@ -23,7 +22,8 @@ export interface AppleLoginProps {
     scale?: number;
     locale?: string;
   };
-  callback?: (d: any) => void;
+  onSuccess?: (d: any) => void;
+  onFailure?: (d: any) => void;
   render?: (props: {
     onClick: (e?: any) => void;
     disabled?: boolean;
@@ -40,9 +40,9 @@ const AppleLogin = (props: AppleLoginProps) => {
     responseMode = "query",
     responseType = "code",
     nonce,
-    callback,
+    onSuccess = () => {},
+    onFailure = () => {},
     scope,
-    autoLoad = false,
     usePopup = false
   } = props;
 
@@ -69,40 +69,29 @@ const AppleLogin = (props: AppleLoginProps) => {
 
     const newwindow = window.open(url,"Stepdrop - Apple Sign In","width=700,height=699,toolbar=0,menubar=0,location=0"); 
     if(newwindow != null) newwindow.focus();
+
+    window.addEventListener("message", function(message) {
+      if (message.origin != "https://appleid.apple.com") { return; }
+
+      var json = JSON.parse(message.data);
+
+      if(json["method"] !== "oauthDone") { return; }
+
+      if(newwindow !== null)
+        newwindow.close();
+
+      if(json["data"]["error"] !== undefined) {
+        onFailure(json["data"]["error"]);
+        return;
+      }
+
+      onSuccess({
+        "code": json["data"]["authorization"]["code"] === undefined ? "" : json["data"]["authorization"]["code"],
+        "firstName": json["data"]["user"]["name"]["firstName"] === undefined ? "" : json["data"]["user"]["name"]["firstName"],
+        "lastName": json["data"]["user"]["name"]["lastName"] === undefined ? "" : json["data"]["user"]["name"]["lastName"]
+      });
+    }, false);
   };
-
-  useEffect(() => {
-    if (autoLoad) {
-      onClick();
-    }
-
-    if (
-      typeof callback === "function" &&
-      responseMode === "query" &&
-      responseType === "code" &&
-      window &&
-      window.location
-    ) {
-      let match;
-      const pl = /\+/g, // Regex for replacing addition symbol with a space
-        search = /([^&=]+)=?([^&]*)/g,
-        decode = (s: any) => {
-          return decodeURIComponent(s.replace(pl, " "));
-        },
-        query = window.location.search.substring(1);
-
-      let urlParams = {};
-      while ((match = search.exec(query))) {
-        urlParams[decode(match[1])] = decode(match[2]);
-      }
-      if (urlParams["code"]) {
-        callback({
-          code: urlParams["code"]
-        });
-      }
-    }
-    return () => {};
-  }, []);
 
   if (typeof render === "function") {
     return render({ onClick });
